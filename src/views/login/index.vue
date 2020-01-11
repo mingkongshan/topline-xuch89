@@ -99,5 +99,8 @@ export default {
       background: #6db4fb;
     }
   }
+  .van-cell {
+    align-items: center;
+  }
 }
 </style>
