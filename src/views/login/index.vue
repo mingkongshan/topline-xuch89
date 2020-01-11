@@ -56,17 +56,34 @@ export default {
       // 1.获取表单数据
       const user = this.user
       // 2.表单验证
-      // 3.请求登录
-      const res = await request({
-        method: 'POST',
-        url: '/app/v1_0/authorizations',
-        // headers: {
-        //   'Content-Type': 'application/json'
-        // }, // 请求头参数
-        // params: {}, // Query 查询参数
-        data: user // Body 请求体参数
+
+      // 开启登陆中 loading
+      this.$toast.loading({
+        duration: 0, // 持续展示 toast
+        message: '登录中...',
+        forbidClick: true // 是否禁止背景点击
       })
-      console.log(res)
+
+      // 3.请求登录
+      try {
+        const res = await request({
+          method: 'POST',
+          url: '/app/v1_0/authorizations',
+          // headers: {
+          //   'Content-Type': 'application/json'
+          // }, // 请求头参数
+          // params: {}, // Query 查询参数
+          data: user // Body 请求体参数
+        })
+
+        console.log(res)
+        // 提示成功
+        this.$toast.success('登陆成功')
+      } catch (err) {
+        console.log('登陆失败', err)
+        this.$toact.fail('登陆失败')
+      }
+
       // 4.根据后端返回结果执行后续业务处理
     }
   }
