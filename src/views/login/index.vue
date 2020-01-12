@@ -17,9 +17,16 @@
     rules="requried" 单个验证规则
     rules="required|length:4" 多个验证规则使用 | 分隔
     v-slot="{ errors }" 获取错误消息，使用 errors[0] 绑定展示错误消息
+
+          内置的规则：https://logaretm.github.io/vee-validate/guide/rules.html#rules
+          自定义规则：
+          单个验证规则：rules="required"
+          多个验证规则：rules="required|length:4"
+         v-slot="{ errors }" 获取校验失败的错误提示消息
+          errors[0] 获取错误消息
     -->
-    <ValidationObserver>
-      <ValidationProvider name="手机号" rules="required" v-slot="{ errors }">
+    <ValidationObserver ref="form">
+      <ValidationProvider name="手机号" rules="required">
         <van-field
           v-model="user.mobile"
           clearable
@@ -27,7 +34,6 @@
         >
           <i class="icon icon-shouji" slot="left-icon"></i>
         </van-field>
-        <span>{{ errors[0] }}</span>
       </ValidationProvider>
 
       <ValidationProvider>
@@ -86,8 +92,15 @@ export default {
   methods: {
     async onLogin () {
       // 1.获取表单数据
-
+      const user = this.user
       // 2.表单验证
+      const success = await this.$refs.form.validate()
+
+      if (!success) {
+        console.log('表单验证失败')
+        // 获取验证失败的错误消息，轻提示
+        return
+      }
 
       // 开启登陆中 loading
       this.$toast.loading({
@@ -100,7 +113,7 @@ export default {
       try {
         const res = await login(this.user)
 
-        console.log('登录成功', res)
+        console.log(res)
         // 提示 success 或者 fail 的时候，会先把其它的 toast 先清除
         this.$toast.success('登陆成功')
       } catch (err) {
