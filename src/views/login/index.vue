@@ -7,25 +7,38 @@
         <van-field
             v-model="user.mobile"
             clearable
-            left-icon="contact"
             placeholder="请输入手机号"
-        />
+        >
+        <i class="icon icon-shouji" slot="left-icon"></i>
+        </van-field>
 
         <van-field
             v-model="user.code"
-            left-icon="contact"
             placeholder="请输入验证码"
         >
+        <i class="icon icon-mima" slot="left-icon"></i>
+        <van-count-down
+            v-if="isCountDownShow"
+            slot="button"
+            :time="1000 * 60"
+            format="ss s"
+            @finish="isCountDownShow = false"
+        />
         <van-button
+          v-else
           slot="button"
           size="small"
           type="primary"
           round
-          >发送验证码</van-button>
+          @click="onSendSmsCode"
+        >发送验证码</van-button>
         </van-field>
     </van-cell-group>
+
     <div class="login-btn-wrap">
         <van-button type="info" @click="onLogin">登录</van-button>
+        <!-- 倒计时 -->
+        <div></div>
     </div>
     <!-- 登录表单 -->
   </div>
@@ -33,7 +46,7 @@
 
 <script>
 
-import request from '@/utils/request'
+import { login, getSmsCode } from '@/api/user'
 
 export default {
   name: 'LoginPage',
@@ -44,7 +57,8 @@ export default {
       user: {
         mobile: '', // 手机号
         code: '' // 验证码
-      }
+      },
+      isCountDownShow: false // 是否显示倒计时
     }
   },
   computed: {},
@@ -54,7 +68,7 @@ export default {
   methods: {
     async onLogin () {
       // 1.获取表单数据
-      const user = this.user
+
       // 2.表单验证
 
       // 开启登陆中 loading
@@ -66,25 +80,35 @@ export default {
 
       // 3.请求登录
       try {
-        const res = await request({
-          method: 'POST',
-          url: '/app/v1_0/authorizations',
-          // headers: {
-          //   'Content-Type': 'application/json'
-          // }, // 请求头参数
-          // params: {}, // Query 查询参数
-          data: user // Body 请求体参数
-        })
+        const res = await login(this.user)
 
-        console.log(res)
-        // 提示成功
+        console.log('登录成功', res)
+        // 提示 success 或者 fail 的时候，会先把其它的 toast 先清除
         this.$toast.success('登陆成功')
       } catch (err) {
         console.log('登陆失败', err)
-        this.$toact.fail('登陆失败')
+        this.$toact.fail('登陆失败,手机号或验证码错误')
       }
 
       // 4.根据后端返回结果执行后续业务处理
+    },
+
+    async onSendSmsCode () {
+      try {
+        const { mobile } = this.user
+        // 1.验证手机是否有效
+
+        // 3.显示倒计时
+        this.isCountDownShow = true
+        // 2.请求发送短信验证码
+        // const res = await getSmsCode(mobile)
+        // console.log(res)
+      } catch (err) {
+        console.log(err)
+        // 关闭验证码显示
+        this.isCountDownShow = false
+        this.$toast('请勿频繁操作')
+      }
     }
   }
 }
