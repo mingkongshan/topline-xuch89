@@ -101,8 +101,6 @@ export default {
         // 3.显示倒计时
         this.isCountDownShow = true
         // 2.请求发送短信验证码
-        // const res = await getSmsCode(mobile)
-        // console.log(res)
       } catch (err) {
         console.log(err)
         // 关闭验证码显示
@@ -124,6 +122,7 @@ export default {
     }
   }
   .van-cell {
+    height: 45px;
     align-items: center;
   }
 }
