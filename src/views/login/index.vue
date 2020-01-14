@@ -123,9 +123,11 @@ export default {
 
       // 3.请求登录
       try {
-        const res = await login(this.user)
+        const { data } = await login(this.user)
+        // 将登录成功获取到的用户 token 相关的数据存储到 Vuex 容器
+        // res.data.data => { token: 'xxx', refresh_token: 'xxx' }
+        this.$store.commit('setUser', data.data)
 
-        console.log(res)
         // 提示 success 或者 fail 的时候，会先把其它的 toast 先清除
         this.$toast.success('登陆成功')
       } catch (err) {

@@ -11,7 +11,7 @@ const request = axios.create({
 
 // axios 开放了自定义转换后端返回数据的 API
 // data 就是后端返回的原始数据
-request.defaults.transformResponse = [function (data) {
+request.defaults.transformResponse = [ function (data) {
   try {
     // 现在我们定制使用 json-bigint 来帮我们处理转换原始的 JSON 格式字符串
     // 这个方法类似于 JSON.parse，只不过它能把数据中的超出 JS 安全整数范围的数字给处理成正确的
