@@ -130,6 +130,9 @@ export default {
 
         // 提示 success 或者 fail 的时候，会先把其它的 toast 先清除
         this.$toast.success('登陆成功')
+
+        // 跳转到首页
+        this.$router.push('/')
       } catch (err) {
         console.log('登陆失败', err)
         this.$toact.fail('登陆失败,手机号或验证码不正确')
@@ -139,25 +142,38 @@ export default {
     },
 
     async onSendSmsCode () {
+      // 1. 获取手机号
+      const { mobile } = this.user
+      // 2. 校验手机号是否有效
+      // 参数1：要验证的数据
+      // 参数2：验证规则
+      // 参数3：一个可选的配置对象，例如配置错误消息字段名称 name
+      // 返回值：{ valid, errors, ... }
+      //          valid: 验证是否成功，成功 true，失败 false
+      //          errors：一个数组，错误提示消息
+      const validateResult = await validate(mobile, 'required|mobile', {
+        name: '手机号'
+      })
+      // 如果验证失败，提示错误消息，停止发送验证码
+      if (!validateResult.valid) {
+        this.$toast(validateResult.errors[0])
+        return
+      }
+      // 3. 发送验证码
       try {
-        const { mobile } = this.user
-        // 1.验证手机是否有效
-        const validateResult = await validate(mobile, 'required|mobile', {
-          name: '手机号'
-        })
-
-        if (!validateResult.valid) {
-          this.$toast(validateResult.errors[0])
-          return
-        }
-        // 3.显示倒计时
+        // 显示倒计时
         this.isCountDownShow = true
-        // 2.请求发送短信验证码
+        // 发送
+        await getSmsCode(mobile)
       } catch (err) {
         console.log(err)
-        // 关闭验证码显示
+        // 发送失败，关闭倒计时
         this.isCountDownShow = false
-        this.$toast('请勿频繁操作')
+        if (err.response.status === 429) {
+          this.$toast('请勿频繁发送')
+          return
+        }
+        this.$toast('发送失败')
       }
     }
   }
@@ -165,7 +181,7 @@ export default {
 </script>
 
 <style scoped lang="less">
-.login-container {
+.btn-wrap {
   .login-btn-wrap {
     padding: 27px 16px;
     .van-button {
@@ -173,7 +189,7 @@ export default {
       background: #6db4fb;
     }
   }
-  .van-cell {
+  .form-item {
     height: 45px;
     align-items: center;
   }
