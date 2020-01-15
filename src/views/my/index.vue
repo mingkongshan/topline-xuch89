@@ -65,14 +65,14 @@
       <van-cell title="小智同学" is-link />
     </van-cell-group>
 
-    <van-cell-group v-if="$store.state.user">
+     <van-cell-group v-if="$store.state.user" @click="onLogout">
       <van-cell
         style="text-align: center;"
         title="退出登录"
         clickable
       />
     </van-cell-group>
-    <!-- /其它 -->
+    <!-- /退出按钮 -->
   </div>
 </template>
 
@@ -105,6 +105,19 @@ export default {
         console.log(err)
         this.$toast('获取数据失败')
       }
+    },
+
+    onLogout () {
+      this.$dialog.confirm({
+        title: '退出提示',
+        message: '确认退出吗？'
+      }).then(() => {
+        // 清除登录状态
+        this.$store.commit('setUser', null)
+      }).catch(() => {
+        // 取消置顶这里
+        this.$toast('已取消退出')
+      })
     }
   }
 }
