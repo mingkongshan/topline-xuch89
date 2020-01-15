@@ -14,7 +14,8 @@ import {
   TabbarItem,
   Grid,
   GridItem,
-  Dialog
+  Dialog,
+  Image
 } from 'vant'
 
 // 注册

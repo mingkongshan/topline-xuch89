@@ -4,7 +4,7 @@
     <div v-if="$store.state.user" class="user-info-wrap">
       <div class="base-info-wrap">
         <div class="avatar-title-wrap">
-          <van-image
+          <van-Image
             class="avatar"
             round
             fit="cover"
@@ -127,7 +127,7 @@ export default {
 .my-container {
   .user-info-wrap {
     background: url("./banner.png") no-repeat;
-    height: 182px;
+    height: 220px;
     box-sizing: border-box;
     background-size: cover;
     padding: 40px 20px;

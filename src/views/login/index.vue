@@ -181,7 +181,7 @@ export default {
 </script>
 
 <style scoped lang="less">
-.btn-wrap {
+.login-container {
   .login-btn-wrap {
     padding: 27px 16px;
     .van-button {
