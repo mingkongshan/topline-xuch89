@@ -21,12 +21,23 @@
 
     </van-tabs>
     <!-- /频道列表 -->
+
+    <!-- 频道编辑 -->
+    <van-popup
+      v-model="isChannelEditShow"
+      position="botton"
+      closeable
+      close-icon-position="top-left"
+      :style="{ height: '100%' }"
+      />
+      <!-- 频道编辑 -->
   </div>
 </template>
 
 <script>
 import { getUserChannels } from '@/api/user'
 import ArticleList from './components/article-list'
+
 export default {
   name: 'HomePage',
   components: {
@@ -37,7 +48,8 @@ export default {
   data () {
     return {
       active: 0,
-      userChannels: [] // 用户频道列表
+      userChannels: [], // 用户频道列表
+      isChannelEditShow: true // 频道编辑的显示状态
     }
   },
   computed: {},
