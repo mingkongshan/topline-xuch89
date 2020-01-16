@@ -15,7 +15,11 @@ import {
   Grid,
   GridItem,
   Dialog,
-  Image
+  Image,
+  Tab,
+  Tabs,
+  List,
+  PullRefresh
 } from 'vant'
 
 // 注册
@@ -33,3 +37,7 @@ Vue.use(Button)
   .use(Grid)
   .use(GridItem)
   .use(Dialog)
+  .use(Tab)
+  .use(Tabs)
+  .use(List)
+  .use(PullRefresh)
