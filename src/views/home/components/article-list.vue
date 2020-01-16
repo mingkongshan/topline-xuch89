@@ -1,5 +1,9 @@
 <template>
   <!-- 文章列表 -->
+  <!--
+    v-model="isLoading" 控制下拉刷新的 loading
+    @refresh 当下拉刷新的时候它会触发该事件
+   -->
   <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
     <!--
       List 列表组件
@@ -34,8 +38,12 @@ import { getArticles } from '@/api/article'
 export default {
   name: 'ArticleList',
   components: {},
+  // props: ['channel'],
+  // 推荐这种写法：更严谨
+  // Props 验证：https://cn.vuejs.org/v2/guide/components-props.html#Prop-%E9%AA%8C%E8%AF%81
   props: {
     channel: {
+      // String、Number、Array、Object、Boolean
       type: Object,
       required: true
     }
@@ -98,12 +106,23 @@ export default {
     //     }
     //   }, 2000)
     // },
+
     // 下拉刷新调用 onRefresh
-    onRefresh () {
-      setTimeout(() => {
-        this.$toast('刷新成功')
-        this.isLoading = false
-      }, 500)
+    async onRefresh () {
+      // 1. 请求获取数据
+      const { data } = await getArticles({
+        channel_id: this.channel.id, // 频道id
+        timestamp: Date.now(), // 时间戳，请求新的推荐数据传当前的时间戳，请求历史推荐传指定的时间戳
+        with_top: 1
+      })
+      // 2. 如果有最新数据，则把数据放到列表的顶部
+      const { results } = data.data
+      this.list.unshift(...results)
+
+      // 3. 关闭下拉刷新的 loading 状态
+      this.isLoading = false
+
+      this.$toast(`更新了${results.length}条数据`)
     }
   }
 }
