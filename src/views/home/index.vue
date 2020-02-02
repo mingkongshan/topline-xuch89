@@ -11,6 +11,12 @@
         title 标签标题
      -->
     <van-tabs v-model="active">
+       <van-icon
+        class="wap-nav"
+        slot="nav-right"
+        name="wap-nav"
+        @click="isChannelEditShow = true"
+      />
       <van-tab
         :title="channel.name"
         v-for="channel in userChannels"
@@ -26,10 +32,13 @@
     <van-popup
       v-model="isChannelEditShow"
       position="botton"
+      :style="{ height: '100%' }"
+      round
       closeable
       close-icon-position="top-left"
-      :style="{ height: '100%' }"
-      />
+    >
+      <channel-edit />
+    </van-popup>
       <!-- 频道编辑 -->
   </div>
 </template>
@@ -37,19 +46,20 @@
 <script>
 import { getUserChannels } from '@/api/user'
 import ArticleList from './components/article-list'
+import ChannelEdit from './components/channel-edit'
 
 export default {
   name: 'HomePage',
   components: {
-    ArticleList
-
+    ArticleList,
+    ChannelEdit
   },
   props: {},
   data () {
     return {
-      active: 0,
+      active: 0, // 控制激活的标签页
       userChannels: [], // 用户频道列表
-      isChannelEditShow: true // 频道编辑的显示状态
+      isChannelEditShow: false
     }
   },
   computed: {},
@@ -60,26 +70,34 @@ export default {
   mounted () {},
   methods: {
     async loadUserChannels () {
-      const { data } = await getUserChannels()
-      this.userChannels = data.data.channels
+      try {
+        const { data } = await getUserChannels()
+        this.userChannels = data.data.channels
+      } catch (err) {
+        console.log(err)
+        this.$toast('获取频道数据失败')
+      }
     }
   }
 }
 </script>
-
 <style scoped lang="less">
 .home-container {
   padding-top: 90px;
   padding-bottom: 50px;
 }
-/* 在有作用域样式的组件中：默认只能对子组件的根节点样式生效 */
-// .vue 文件中有一个专有的特殊语法：让样式作用的更深（主要针对的子组件）
-// 使用 >>>、/deep/、::v-deep
-::v-deep .van-tabs__wrap {
+.wap-nav {
+  position: fixed;
+  right: 0;
+  line-height: 44px;
+  background: #fff;
+  opacity: .8;
+}
+/deep/ .van-tabs__wrap {
   position: fixed;
   top: 46px;
   left: 0;
   right: 0;
-  z-index: 2;
+  z-index: 1;
 }
 </style>
