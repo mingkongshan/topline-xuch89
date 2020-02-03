@@ -1,17 +1,16 @@
 <template>
   <div class="home-container">
     <!-- 导航栏 -->
-    <van-nav-bar title="首页" fixed/>
+    <van-nav-bar title="首页" fixed />
     <!-- /导航栏 -->
-
     <!-- 频道列表 -->
     <!--
-      tab 组件
-        v-model="active" 控制被激活的标签
-        title 标签标题
+      v-model="active" 控制激活的标签
+      title 标签标题
      -->
     <van-tabs v-model="active">
-       <van-icon
+      <!-- 通过插槽把面包按钮放进去 -->
+      <van-icon
         class="wap-nav"
         slot="nav-right"
         name="wap-nav"
@@ -22,32 +21,31 @@
         v-for="channel in userChannels"
         :key="channel.id"
       >
-      <article-list :channel="channel" />
+        <!-- 文章列表 -->
+        <article-list :channel="channel" />
+        <!-- /文章列表 -->
       </van-tab>
-
     </van-tabs>
     <!-- /频道列表 -->
-
-    <!-- 频道编辑 -->
+    <!-- 编辑频道 -->
     <van-popup
       v-model="isChannelEditShow"
-      position="botton"
+      position="bottom"
       :style="{ height: '100%' }"
       round
       closeable
       close-icon-position="top-left"
     >
-      <channel-edit />
+
+      <channel-edit :user-channels="userChannels" />
     </van-popup>
-      <!-- 频道编辑 -->
+    <!-- /编辑频道 -->
   </div>
 </template>
-
 <script>
-import { getUserChannels } from '@/api/user'
+import { getUserChannels } from '@/api/channel'
 import ArticleList from './components/article-list'
 import ChannelEdit from './components/channel-edit'
-
 export default {
   name: 'HomePage',
   components: {
