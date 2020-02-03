@@ -16,6 +16,21 @@
         :text="channel.name"
         @click="onUserChannelClick(index)"
       >
+      <!--
+          :class="{
+            active: index === active
+          }"
+          样式绑定。
+          属性名：CSS 类名
+          属性值：一个布尔值
+         -->
+        <span
+          slot="text"
+          class="text"
+          :class="{
+            active: index === active
+          }"
+        >{{ channel.name }}</span>
         <van-icon v-show="isEditShow && index !== 0" slot="icon" name="close" />
     </van-grid-item>
     </van-grid>
@@ -44,6 +59,10 @@ export default {
   props: {
     userChannels: {
       type: Array,
+      required: true
+    },
+    active: {
+      type: Number,
       required: true
     }
   },
@@ -113,9 +132,12 @@ export default {
     .van-grid-item__content {
       background: #f4f5f6;
     }
-    .van-grid-item__text {
+    .van-grid-item__text, .text {
       font-size: 14px;
       color: #222;
+    }
+    .active {
+      color: red;
     }
   }
 }

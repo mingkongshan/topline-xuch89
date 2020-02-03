@@ -39,6 +39,7 @@
 
       <channel-edit
         :user-channels="userChannels"
+        :active="active"
         @switch="onChannelSwitch"
       />
     </van-popup>
@@ -79,6 +80,7 @@ export default {
         this.$toast('获取频道数据失败')
       }
     },
+
     onChannelSwitch (index) {
       this.active = index // 切换激活频道
       this.isChannelEditShow = false // 关闭弹层
