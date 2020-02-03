@@ -37,7 +37,10 @@
       close-icon-position="top-left"
     >
 
-      <channel-edit :user-channels="userChannels" />
+      <channel-edit
+        :user-channels="userChannels"
+        @switch="onChannelSwitch"
+      />
     </van-popup>
     <!-- /编辑频道 -->
   </div>
@@ -75,6 +78,10 @@ export default {
         console.log(err)
         this.$toast('获取频道数据失败')
       }
+    },
+    onChannelSwitch (index) {
+      this.active = index // 切换激活频道
+      this.isChannelEditShow = false // 关闭弹层
     }
   }
 }
