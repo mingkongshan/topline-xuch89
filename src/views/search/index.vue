@@ -65,6 +65,7 @@
 import SearchResult from './components/search-result'
 import { getSuggestions } from '@/api/search'
 import { debounce } from 'lodash'
+import { getItem, setItem } from '@/utils/storage'
 
 export default {
   name: 'SearchPage',
@@ -77,18 +78,23 @@ export default {
       searchContent: '', // 搜索内容
       isSearchResultShow: false, // 是否展示搜索结果
       suggestions: [], // 联想建议
-      searchHistories: [], // 搜索历史记录
+      searchHistories: getItem('serach-histories') || [], // 搜索历史记录
       isDeleteShow: false // 删除历史记录的显示状态
     }
   },
   computed: {},
-  watch: {},
+  watch: {
+    searchHistories (val) {
+      setItem('serach-histories', val)
+    }
+  },
   created () {},
   mounted () {},
   methods: {
     onSearch (q) {
       // 1. 更新搜索文本框的数据
       this.searchContent = q
+
       // 2. 记录搜索历史记录
       const searchHistories = this.searchHistories
       const index = searchHistories.indexOf(q)
@@ -117,6 +123,7 @@ export default {
 
       // 1. 请求获取数据
       const { data } = await getSuggestions(searchContent)
+
       // 2. 将数据添加到组件实例中
       this.suggestions = data.data.options
 
