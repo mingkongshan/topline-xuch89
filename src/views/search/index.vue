@@ -8,7 +8,7 @@
         show-action
         background="#3296fa"
         @search="onSearch(searchContent)"
-        @cancel="onCancel"
+        @cancel="$router.back()"
         @focus="isSearchResultShow = false"
         @input="onSearchInput"
     />
@@ -105,10 +105,6 @@ export default {
 
       // 3.展示搜索结果
       this.isSearchResultShow = true
-    },
-
-    onCancel () {
-      console.log('onCancel')
     },
 
     // debounce 函数
